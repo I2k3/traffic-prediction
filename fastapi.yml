@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: traffic-server
+spec:
+  selector:
+    matchLabels:
+      app: traffic-server
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: traffic-server
+    spec:
+      containers:
+      - name: traffic-container
+        image: docker.io/itzelrios/traffic:latest
+        ports:
+        - containerPort: 80
+
+      
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    run: traffic-service
+  name: traffic-service
+spec:
+  ports:
+  - port: 80
+    targetPort: 80
+  selector:
+    app: traffic-server
+  type: LoadBalancer
